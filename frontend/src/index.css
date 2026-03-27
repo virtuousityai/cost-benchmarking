@@ -14,3 +14,9 @@ body {
   margin: 0;
   text-align: left;
 }
+
+@keyframes loading {
+  0% { width: 0%; margin-left: 0%; }
+  50% { width: 100%; margin-left: 0%; }
+  100% { width: 0%; margin-left: 100%; }
+}

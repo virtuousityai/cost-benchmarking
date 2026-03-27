@@ -1,9 +1,44 @@
 const BASE = import.meta.env.VITE_API_URL || '/api'
 
+const MAX_RETRIES = 5
+const RETRY_DELAY_MS = 3000
+
+async function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
 async function get<T>(path: string): Promise<T> {
-  const res = await fetch(`${BASE}${path}`)
-  if (!res.ok) throw new Error(`API error: ${res.status}`)
-  return res.json()
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const res = await fetch(`${BASE}${path}`)
+      if (res.ok) return res.json()
+      if (attempt < MAX_RETRIES) {
+        await sleep(RETRY_DELAY_MS)
+        continue
+      }
+      throw new Error(`API error: ${res.status}`)
+    } catch (err) {
+      if (attempt < MAX_RETRIES) {
+        await sleep(RETRY_DELAY_MS)
+        continue
+      }
+      throw err
+    }
+  }
+  throw new Error('Max retries exceeded')
+}
+
+// Wake up the backend — call this on app load
+export async function warmUpBackend(): Promise<void> {
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const res = await fetch(`${BASE}/health`)
+      if (res.ok) return
+    } catch {
+      // backend still waking up
+    }
+    if (attempt < MAX_RETRIES) await sleep(RETRY_DELAY_MS)
+  }
 }
 
 // Step 1

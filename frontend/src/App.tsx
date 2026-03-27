@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { warmUpBackend } from './lib/api'
 import Stepper from './components/Stepper'
 import StepSummary from './components/StepSummary'
 import Step1CohortBuilder from './steps/Step1CohortBuilder'
@@ -63,8 +64,30 @@ const STEPS = [
 
 function App() {
   const [currentStep, setCurrentStep] = useState(0)
+  const [backendReady, setBackendReady] = useState(false)
   const step = STEPS[currentStep]
   const StepComponent = step.component
+
+  useEffect(() => {
+    warmUpBackend().then(() => setBackendReady(true))
+  }, [])
+
+  if (!backendReady) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-teal-50 to-blue-50">
+        <img src="/logo.png" alt="Logo" className="h-16 w-16 object-contain mb-6 animate-pulse" />
+        <h2 className="text-xl font-semibold text-teal-800 mb-2">
+          Starting up...
+        </h2>
+        <p className="text-sm text-gray-500">
+          Waking up the server — this may take up to 30 seconds on first visit.
+        </p>
+        <div className="mt-6 w-48 h-1.5 bg-teal-100 rounded-full overflow-hidden">
+          <div className="h-full bg-teal-500 rounded-full animate-[loading_2s_ease-in-out_infinite]" />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen">
