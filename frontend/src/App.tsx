@@ -70,13 +70,16 @@ function App() {
     <div className="min-h-screen">
       {/* Header */}
       <header className="bg-gradient-to-r from-teal-800 to-blue-900 text-white px-8 py-5 shadow-lg">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-2xl font-bold tracking-tight">
-            Longitudinal Cost & Care Benchmarking
-          </h1>
-          <p className="text-teal-200 text-sm mt-1">
-            Type 2 Diabetes Cohort — Population Analytics
-          </p>
+        <div className="max-w-7xl mx-auto flex items-center gap-4">
+          <img src="/logo.png" alt="Logo" className="h-10 w-10 object-contain" />
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">
+              Longitudinal Cost & Care Benchmarking
+            </h1>
+            <p className="text-teal-200 text-sm mt-1">
+              Type 2 Diabetes Cohort — Population Analytics
+            </p>
+          </div>
         </div>
       </header>
 
